@@ -414,15 +414,15 @@ void StreamElementsStore::DeviceDidDisconnect(const std::string& inDeviceID)
 void StreamElementsStore::SendToPlugin(const std::string& inAction, const std::string& inContext, const json &inPayload, const std::string& inDeviceID)
 {
 	// Nothing to do
-	mConnectionManager->LogMessage("test3");
-	std::string sSerialized = inPayload.dump();
-	mConnectionManager->LogMessage(sSerialized);
+	//mConnectionManager->LogMessage("test3");
+	//std::string sSerialized = inPayload.dump();
+	//mConnectionManager->LogMessage(sSerialized);
 }
 
 void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const std::string& inContext, const json& inPayload, const std::string& inDeviceID)
 {
 	//std::string sSerialized = inPayload.dump();
-	mConnectionManager->LogMessage(inAction);
+	//mConnectionManager->LogMessage(inAction);
 	if (strcmp(inAction.c_str(), kActionNameItem) == 0)
 	{
 		CItem* pItem = m_pContextManager->GetItem(inContext);

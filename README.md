@@ -5,11 +5,11 @@ so do not share these with anybody.
 
 make a note of the "Account ID" and "JWT Token"
 
-----------------------------------------------------------------------
+=========
 
 After installing the plugin there should be a new section called StreamElements. Under this section will be 'Store Item' and 'Close Store'
 
-----------------------------------------------------------------------
+=========
 
 'Store Item' is used to interact with a specific store item in a specific channel.
 
@@ -41,7 +41,7 @@ Red - The button will be red if the store item is disabled.
 
 Yellow - The button will be yellow if there has been an issue retrieving data for this item. This could be because the Channel or Store Item data is incorrect
 
-----------------------------------------------------------------------
+=========
 
 Close Store will close all enabled store items for the designated channel
 

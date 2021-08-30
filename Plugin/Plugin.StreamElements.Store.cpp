@@ -279,7 +279,7 @@ void StreamElementsStore::UpdateTimer()
 				}
 			}
 		}
-		iTimer = -1;
+		iTimer = 0;
 	}
 	iTimer++;
 }

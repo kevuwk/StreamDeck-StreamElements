@@ -7,7 +7,7 @@ make a note of the "Account ID" and "JWT Token"
 
 ------
 
-After installing the plugin there should be a new section called StreamElements. Under this section will be 'Store Item' and 'Close Store'
+After installing the plugin there should be a new section in the Stream Deck app called StreamElements. Under this section will be 'Store Item' and 'Close Store'
 
 ------
 ## Store Item

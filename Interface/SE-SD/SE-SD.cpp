@@ -1,3 +1,7 @@
+/*############################################################################################
+############################### Should be built as x86 (WIN32) ###############################
+############################################################################################*/
+
 #include <stdio.h>
 #include <curl/curl.h>
 #include <iostream>
@@ -140,7 +144,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPSTR lpCmdLine, int 
 
 int Get()
 {
-    const std::string url("http://date.jsontest.com/");
     CURL* hnd = curl_easy_init();
 
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");

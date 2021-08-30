@@ -55,7 +55,7 @@ This button will only work properly if you have atleast 1 'Store Item' button fo
 ------
 __Action__
 
-Pressing the button will turn every store item, whether it is on the stream deck or not, to disabled.
+Pressing the button will change every store item, whether it is on the stream deck or not, to disabled.
 
 ------
 __Button Status__

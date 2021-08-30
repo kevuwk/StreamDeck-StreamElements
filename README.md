@@ -5,13 +5,14 @@ so do not share these with anybody.
 
 make a note of the "Account ID" and "JWT Token"
 
-==========================================================================================
+------
 
 After installing the plugin there should be a new section called StreamElements. Under this section will be 'Store Item' and 'Close Store'
 
-==========================================================================================
+------
+## Store Item
 
-'Store Item' is used to interact with a specific store item in a specific channel.
+__Store Item__ is used to interact with a specific store item in a specific channel.
 
 Title - Generally shouldn't be used and is replaced by Display Name
 
@@ -26,12 +27,12 @@ Amount - This is the amount of the item that should be made available when enabl
 JWT Token - This is the "JWT Token" captured previously. You only need to input this token once and click the Set button underneath. This token will then be saved within the stream deck and when the stream deck button loses focus within the app the text box will go blank.
 
 ------
-Action
+__Action__
 
 Pressing the button will toggle the status of the store item. If the item is disabled it will become enabled and if enabled will become disabled.
 
 ------
-Button Status
+__Button Status__
 
 Green - The button will be green if the store item is enabled. If the store item has a restricted number of redemptions then the amount left will also be displayed on the button.
 
@@ -41,9 +42,9 @@ Red - The button will be red if the store item is disabled.
 
 Yellow - The button will be yellow if there has been an issue retrieving data for this item. This could be because the Channel or Store Item data is incorrect
 
-==========================================================================================
-
-Close Store will close all enabled store items for the designated channel
+------
+## Close Store
+__Close Store__ will close all enabled store items for the designated channel
 
 Title - You can use the title on this button
 
@@ -52,12 +53,12 @@ Channel - This should be the ID of the channel you want to query. This is the "A
 This button will only work properly if you have atleast 1 'Store Item' button for the channel.
 
 ------
-Action
+__Action__
 
 Pressing the button will turn every store item, whether it is on the stream deck or not, to disabled.
 
 ------
-Button Status
+__Button Status__
 
 Green - The button will be green if there is an enabled store item that is also a button on the stream deck
 

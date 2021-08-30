@@ -3,9 +3,7 @@ class CItem;
 #ifndef __CITEM_H
 #define __CITEM_H
 
-//#include "common.h"
 #include <list>
-//#include <fstream>
 #include <sstream>
 
 using namespace std;

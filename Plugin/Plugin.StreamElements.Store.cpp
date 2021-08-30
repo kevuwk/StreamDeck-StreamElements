@@ -214,15 +214,15 @@ void StreamElementsStore::UpdateTimer()
 							else
 							{
 								mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-								std::string sTitle = ReformDisplay(pItem->GetDisplay());
+								std::string sTitle = pItem->GetDisplay();
 								mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 							}
 							pItem->SetUpdated();
 							bStoreEnabled = true;
 						}
 
-						f = i + 3;
 						i = i + 3;
+						f = i;
 					}
 					else if (strcmp(arr[i].c_str(), "disabled") == 0)
 					{
@@ -243,8 +243,8 @@ void StreamElementsStore::UpdateTimer()
 							mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 							pItem->SetUpdated();
 						}
-						f = i + 1;
 						i++;
+						f = i;
 					}
 					else { i++; }
 				}
@@ -274,7 +274,7 @@ void StreamElementsStore::UpdateTimer()
 				if (!pItem->GetUpdated())
 				{
 					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC6SURBVHhe7dyxEYAgEABBtAD7r9MG1IAULnd2E0j/5gMijucez2DpnCcLAgWBgkBBoCBQECjkO+i45uWnvvm3bFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQMH/QcEGBYGCQEGgIFAQKAi0NcYL/mELXpzOcG4AAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-					std::string sTitle = ReformDisplay(pItem->GetDisplay());
+					std::string sTitle = pItem->GetDisplay();
 					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 			}
@@ -428,19 +428,13 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 		CItem* pItem = m_pContextManager->GetItem(inContext);
 		if (!pItem)
 		{
-			//mConnectionManager->LogMessage("dr creating new context");
 			pItem = m_pContextManager->AddItem(inContext, inPayload);
-			//mConnectionManager->LogMessage("item");
-			//mConnectionManager->LogMessage(pContext->GetItem());
 			pItem->SetDisplay(ReformDisplay(pItem->GetDisplay()));
 			mConnectionManager->SetTitle(pItem->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
 		}
 		else
 		{
-			//mConnectionManager->LogMessage("dr updating existing context");
 			pItem->UpdateSettings(inPayload);
-			//mConnectionManager->LogMessage("item");
-			//mConnectionManager->LogMessage(pContext->GetItem());
 			pItem->SetDisplay(ReformDisplay(pItem->GetDisplay()));
 			mConnectionManager->SetTitle(pItem->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
 
@@ -451,17 +445,11 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 		CStore* pStore = m_pContextManager->GetStore(inContext);
 		if (!pStore)
 		{
-			//mConnectionManager->LogMessage("dr creating new context");
 			pStore = m_pContextManager->AddStore(inContext, inPayload);
-			//mConnectionManager->LogMessage("item");
-			//mConnectionManager->LogMessage(pContext->GetItem());
 		}
 		else
 		{
-			//mConnectionManager->LogMessage("dr updating existing context");
 			pStore->UpdateSettings(inPayload);
-			//mConnectionManager->LogMessage("item");
-			//mConnectionManager->LogMessage(pContext->GetItem());
 		}
 	}
 }

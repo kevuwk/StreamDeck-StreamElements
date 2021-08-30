@@ -26,6 +26,8 @@ Amount - This is the amount of the item that should be made available when enabl
 
 JWT Token - This is the "JWT Token" captured previously. You only need to input this token once and click the Set button underneath. This token will then be saved within the stream deck and when the stream deck button loses focus within the app the text box will go blank.
 
+Set API Token - This button is used to update the API (JWT) token. If the 'JWI Token' text box above is empty then it will effectively clear what is stored.
+
 ------
 __Action__
 

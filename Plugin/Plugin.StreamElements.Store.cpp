@@ -198,13 +198,13 @@ void StreamElementsStore::UpdateTimer()
 							{
 								if (atoi(arr[i + 2].c_str()) == 0)
 								{
-									mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADCSURBVHhe7dwhEsIwFADR0DPV13LkWjx3ahGRhPXMeybfZueLqDyO5/saLG3zZEGgIFAQKAgUBAoChXwHvc59Tv/pc/85fWeDgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQK/g8KNigIFAQKAgWBgkBBoJ/GuAFOPAqEPozxcQAAAABJRU5ErkJggg==", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+									mConnectionManager->SetImage(kButtonColourBlue, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 									std::string sTitle = pItem->GetDisplay();
 									mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								}
 								else
 								{
-									mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+									mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 									std::string sTitle = pItem->GetDisplay();
 									sTitle.append("\n");
 									sTitle.append(std::to_string(atoi(arr[i + 2].c_str())));
@@ -213,7 +213,7 @@ void StreamElementsStore::UpdateTimer()
 							}
 							else
 							{
-								mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+								mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								std::string sTitle = pItem->GetDisplay();
 								mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 							}
@@ -238,7 +238,7 @@ void StreamElementsStore::UpdateTimer()
 						CItem* pItem = m_pContextManager->GetItem(ssChannel, sItem);
 						if (pItem)
 						{
-							mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyhEcMwEABBxS2YGqb/igxDU4MdIBjleGaX6KluHgjp8T6e12BpmycLAgWBgkBBoCBQECjkO2h/nXP6T5/7z+k7GxQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUPB/ULBBQaAgUBAoCBQECgL9NMYNUZoKEgTQxbkAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 							std::string sTitle = pItem->GetDisplay();
 							mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 							pItem->SetUpdated();
@@ -257,11 +257,11 @@ void StreamElementsStore::UpdateTimer()
 					{
 						if (bStoreEnabled)
 						{
-							mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII=", pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							mConnectionManager->SetImage(kButtonColourGreen, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 						}
 						else
 						{
-							mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyhEcMwEABBxS2YGqb/igxDU4MdIBjleGaX6KluHgjp8T6e12BpmycLAgWBgkBBoCBQECjkO2h/nXP6T5/7z+k7GxQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUPB/ULBBQaAgUBAoCBQECgL9NMYNUZoKEgTQxbkAAAAASUVORK5CYII=", pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							mConnectionManager->SetImage(kButtonColourRed, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 						}
 					}
 				}
@@ -273,7 +273,7 @@ void StreamElementsStore::UpdateTimer()
 				CItem* pItem = (*iter);
 				if (!pItem->GetUpdated())
 				{
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC6SURBVHhe7dyxEYAgEABBtAD7r9MG1IAULnd2E0j/5gMijucez2DpnCcLAgWBgkBBoCBQECjkO+i45uWnvvm3bFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQMH/QcEGBYGCQEGgIFAQKAi0NcYL/mELXpzOcG4AAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourYellow, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 					std::string sTitle = pItem->GetDisplay();
 					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
@@ -314,17 +314,17 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 				if (iResult == 1)
 				{
 					//purple
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADCSURBVHhe7dyxEcIwEABB4e7cg6nO9EB5NoFCxOXMbqJPdfOBIj3O/XUNlrZ5siBQECgIFAQKAgWBQr6Dnu9jTv/pc/85fWeDgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQK/g8KNigIFAQKAgWBgkBBoJ/GuAHXnAs70NuowgAAAABJRU5ErkJggg==", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourPurple, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 				else if (iResult == 2)
 				{
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyhEcMwEABBxS2YGqb/igxDU4MdIBjleGaX6KluHgjp8T6e12BpmycLAgWBgkBBoCBQECjkO2h/nXP6T5/7z+k7GxQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUPB/ULBBQaAgUBAoCBQECgL9NMYNUZoKEgTQxbkAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 				else if (iResult == 3)
 				{ //green
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 					if (atoi(pItem->GetAmount().c_str()) > 0)
 					{
 						sTitle.append("\n");
@@ -334,7 +334,7 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 				}
 				else
 				{// yellow 
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC6SURBVHhe7dyxEYAgEABBtAD7r9MG1IAULnd2E0j/5gMijucez2DpnCcLAgWBgkBBoCBQECjkO+i45uWnvvm3bFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQMH/QcEGBYGCQEGgIFAQKAi0NcYL/mELXpzOcG4AAAAASUVORK5CYII=", pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourYellow, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 			}
@@ -354,11 +354,11 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 				int iResult = system(sCommand.c_str());
 				if (iResult == 1)
 				{
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyhEcMwEABBxS2YGqb/igxDU4MdIBjleGaX6KluHgjp8T6e12BpmycLAgWBgkBBoCBQECjkO2h/nXP6T5/7z+k7GxQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUPB/ULBBQaAgUBAoCBQECgL9NMYNUZoKEgTQxbkAAAAASUVORK5CYII=", pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourRed, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 				else
 				{
-					mConnectionManager->SetImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC6SURBVHhe7dyxEYAgEABBtAD7r9MG1IAULnd2E0j/5gMijucez2DpnCcLAgWBgkBBoCBQECjkO+i45uWnvvm3bFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQMH/QcEGBYGCQEGgIFAQKAi0NcYL/mELXpzOcG4AAAAASUVORK5CYII=", pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					mConnectionManager->SetImage(kButtonColourYellow, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
 			}
 		}

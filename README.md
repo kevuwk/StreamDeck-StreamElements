@@ -67,8 +67,8 @@ Green - The button will be green if there is an enabled store item that is also 
 Red - This button will be red if there are no enabled store items that are also a button on the stream deck. This does not mean there are no enabled store items just that the stream deck isn't monitoring them
 
 ------
-## Close Store
-__Close Store__ will close all enabled store items for the designated channel that are on the stream deck
+## Change Store Item Cost
+__Change Store Item Cost__ will close all enabled store items for the designated channel that are on the stream deck
 
 Title - Generally shouldn't be used and is replaced by Display Name
 

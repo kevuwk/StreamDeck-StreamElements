@@ -46,7 +46,7 @@ Yellow - The button will be yellow if there has been an issue retrieving data fo
 
 ------
 ## Close Store
-__Close Store__ will close all enabled store items for the designated channel
+__Close Store__ will close all enabled store items for the designated channel that are on the stream deck
 
 Title - You can use the title on this button
 
@@ -57,7 +57,7 @@ This button will only work properly if you have atleast 1 'Store Item' button fo
 ------
 __Action__
 
-Pressing the button will change every store item, whether it is on the stream deck or not, to disabled.
+Pressing the button will change every store item on the stream deck to disabled.
 
 ------
 __Button Status__
@@ -65,3 +65,33 @@ __Button Status__
 Green - The button will be green if there is an enabled store item that is also a button on the stream deck
 
 Red - This button will be red if there are no enabled store items that are also a button on the stream deck. This does not mean there are no enabled store items just that the stream deck isn't monitoring them
+
+------
+## Close Store
+__Close Store__ will close all enabled store items for the designated channel that are on the stream deck
+
+Title - Generally shouldn't be used and is replaced by Display Name
+
+Display Name - This should be used instead of Title. The cost will be appended automatically by the plugin.
+
+Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
+
+Store Item - This is the exact name of the store item including capital letters. e.g. 2K Single Raffle
+
+Cost 1 - This is the primary cost of the item.
+
+Cost 2 - This is the secondary cost of the item.
+
+JWT Token - This is the "JWT Token" captured previously. You only need to input this token once and click the Set button underneath. This token will then be saved within the stream deck and when the stream deck button loses focus within the app the text box will go blank.
+
+Set API Token - This button is used to update the API (JWT) token. If the 'JWI Token' text box above is empty then it will effectively clear what is stored.
+
+------
+__Action__
+
+Pressing the button will switch the cost of the item between cost 1 and cost 2. If the cost matches cost 1 then it will change to cost 2 and vice versa. If the cost doesn't match either number then the cost will be set to cost 1. This will change the cost whether the item is enabled or disabled but will not change this state. This button will not change colour and the only thing that changes is the cost.
+
+------
+__Button Status__
+
+Not specific status but the current cost is displayed on the button.

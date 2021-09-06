@@ -38,6 +38,11 @@ CItem::CItem(std::string inContext, const json& inPayload)
 			}
 		}
 	}
+	m_sID = "";
+	m_bEnabled = false;
+	m_iCost = 0;
+	m_sDescription = "";
+	m_bSubscribers = false;
 }
 
 void CItem::UpdateSettings(const json& inPayload)

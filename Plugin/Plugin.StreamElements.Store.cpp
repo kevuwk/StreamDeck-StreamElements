@@ -14,6 +14,7 @@
 #include "Common/ESDConnectionManager.h"
 #include <fstream>
 
+#include <..\curl\curl.h>
 
 using json = nlohmann::json;
 
@@ -125,130 +126,118 @@ void StreamElementsStore::UpdateTimer()
 	{
 		if (mConnectionManager != nullptr)
 		{
+			//mConnectionManager->LogMessage("u1");
 			m_pContextManager->ResetUpdated();
 
 			list <std::string> sChannels = m_pContextManager->GetChannels();
 			list <std::string> ::iterator sChannel;
 			for (sChannel = sChannels.begin(); sChannel != sChannels.end(); sChannel++)
 			{
-				//mConnectionManager->LogMessage(sChannel->c_str());
 				bool bStoreEnabled = false;
 
-				std::string sCommand;
-				sCommand.append("SE-SD.exe ");
-				sCommand.append(sChannel->c_str());
-				sCommand.append(" get ");
-				sCommand.append(m_sAPI);
+				CURL* hnd = curl_easy_init();
+				curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
+				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+				sURL.append(sChannel->c_str());
+				sURL.append("/items/?limit=&offset=");
+				curl_easy_setopt(hnd, CURLOPT_URL, sURL.c_str());
 
-				std::array<char, 128> buffer;
-				std::string sResult;
-				std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(sCommand.c_str(), "r"), _pclose);
-				if (!pipe) {
-					throw std::runtime_error("popen() failed!");
-				}
-				while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-					sResult += buffer.data();
-				}
+				struct curl_slist* headers = NULL;
+				headers = curl_slist_append(headers, "Accept: ");
+				std::string sAuth = "authorization: Bearer ";
+				sAuth.append(m_sAPI);
+				headers = curl_slist_append(headers, sAuth.c_str());
+				curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
 
-				std::string arr[100];
-				std::string search = " ";
-				int spacePos;
-				int currPos = 0;
-				int k = 0;
-				int prevPos = 0;
+				long httpCode(0);
+				std::unique_ptr<std::string> httpData(new std::string());
 
-				do
+				curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, callback);
+
+				curl_easy_setopt(hnd, CURLOPT_WRITEDATA, httpData.get());
+
+				curl_easy_perform(hnd);
+				curl_easy_getinfo(hnd, CURLINFO_RESPONSE_CODE, &httpCode);
+				if (httpCode == 200)
 				{
-					spacePos = sResult.find(search, currPos);
-					if (spacePos >= 0 && k < 100)
+					auto parsed_json = json::parse(*httpData.get());
+					auto jBegin = parsed_json.begin();
+					nlohmann::detail::iter_impl<nlohmann::json> iter;
+					for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
 					{
-						currPos = spacePos;
-						arr[k] = sResult.substr(prevPos, currPos - prevPos);
-						currPos++;
-						prevPos = currPos;
-						k++;
-					}
-					else
-					{
-						spacePos = -1;
-					}
-				} while (spacePos >= 0);
-				arr[k] = sResult.substr(prevPos, sResult.length() - prevPos);
-
-				int i = 0;
-				int f = 0;
-
-				while (i < k)
-				{
-					if (strcmp(arr[i].c_str(), "enabled") == 0)
-					{
-						int k = 0;
-						std::string sItem;
-						while (k < (i - f))
+						json jsonData = *iter;
+						std::string sItem = jsonData["name"];
+						bool bEnabled = jsonData["enabled"];
+						int iTotal = jsonData["quantity"]["total"];
+						int iCurrent = -1;
+						if (!jsonData["quantity"]["current"].empty())
 						{
-							sItem.append(arr[f + k].c_str());
-							if (k != (i - f - 1)) sItem.append(" ");
-							k++;
+							iCurrent = jsonData["quantity"]["current"];
 						}
+						std::string sID = jsonData["_id"];
+						bool bSubscribers = jsonData["subscriberOnly"];
+
+						// find store item
 						std::string ssChannel = sChannel->c_str();
 						CItem* pItem = m_pContextManager->GetItem(ssChannel, sItem);
 						if (pItem)
 						{
-							if (atoi(arr[i + 1].c_str()) > 0)
+							pItem->SetID(sID);
+							pItem->SetEnabled(bEnabled);
+							pItem->SetCost(jsonData["cost"]);
+							pItem->SetDescription(jsonData["description"]);
+							pItem->SetSubscribers(bSubscribers);
+							if (bEnabled)
 							{
-								if (atoi(arr[i + 2].c_str()) == 0)
+								if (iTotal > 0)
 								{
-									mConnectionManager->SetImage(kButtonColourBlue, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-									std::string sTitle = pItem->GetDisplay();
-									mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+									if (iCurrent == 0)
+									{
+										mConnectionManager->SetImage(kButtonColourBlue, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+										std::string sTitle = pItem->GetDisplay();
+										mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+									}
+									else
+									{
+										mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+										std::string sTitle = pItem->GetDisplay();
+										sTitle.append("\n");
+										sTitle.append(std::to_string(iCurrent));
+										mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+									}
 								}
 								else
 								{
 									mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 									std::string sTitle = pItem->GetDisplay();
-									sTitle.append("\n");
-									sTitle.append(std::to_string(atoi(arr[i + 2].c_str())));
 									mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								}
+								pItem->SetUpdated();
+								bStoreEnabled = true;
 							}
 							else
 							{
-								mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+								mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								std::string sTitle = pItem->GetDisplay();
 								mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+								pItem->SetUpdated();
 							}
-							pItem->SetUpdated();
-							bStoreEnabled = true;
 						}
-
-						i = i + 3;
-						f = i;
-					}
-					else if (strcmp(arr[i].c_str(), "disabled") == 0)
-					{
-						int k = 0;
-						std::string sItem;
-						while (k < (i - f))
+						CCost* pCost = m_pContextManager->GetCost(ssChannel, sItem);
+						if (pCost)
 						{
-							sItem.append(arr[f + k].c_str());
-							if (k != (i - f - 1)) sItem.append(" ");
-							k++;
+							pCost->SetID(sID);
+							pCost->SetEnabled(bEnabled);
+							pCost->SetCost(jsonData["cost"]);
+							pCost->SetDescription(jsonData["description"]);
+							pCost->SetSubscribers(bSubscribers);
+							std::string sTitle = pCost->GetDisplay();
+							sTitle.append("\n");
+							sTitle.append(std::to_string(pCost->GetCost()));
+							mConnectionManager->SetTitle(sTitle, pCost->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 						}
-						std::string ssChannel = sChannel->c_str();
-						CItem* pItem = m_pContextManager->GetItem(ssChannel, sItem);
-						if (pItem)
-						{
-							mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-							std::string sTitle = pItem->GetDisplay();
-							mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-							pItem->SetUpdated();
-						}
-						i++;
-						f = i;
 					}
-					else { i++; }
 				}
-				// update any close store buttons
 				list < CStore* > ::iterator iter;
 				for (iter = m_pContextManager->IterStoreBegin(); iter != m_pContextManager->IterStoreEnd(); iter++)
 				{
@@ -265,7 +254,9 @@ void StreamElementsStore::UpdateTimer()
 						}
 					}
 				}
+
 			}
+			
 
 			list < CItem* > ::iterator iter;
 			for (iter = m_pContextManager->IterItemBegin(); iter != m_pContextManager->IterItemEnd(); iter++)
@@ -288,77 +279,285 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 {
 	if (mConnectionManager != nullptr)
 	{
+		//mConnectionManager->LogMessage("k1");
 		if (strcmp(inAction.c_str(), kActionNameItem) == 0)
 		{
 			CItem* pItem = m_pContextManager->GetItem(inContext);
 			if (pItem)
 			{
-				std::string sCommand;
-				sCommand.append("SE-SD.exe ");
-				sCommand.append(pItem->GetItem());
-				sCommand.append(" update ");
-				sCommand.append(pItem->GetChannel());
-				sCommand.append(" ");
-				sCommand.append(m_sAPI);
-
-
-				if (atoi(pItem->GetAmount().c_str()) > 0)
+				std::string sID = pItem->GetID();
+				if (sID != "")
 				{
-					sCommand.append(" ");
-					sCommand.append(pItem->GetAmount());
-				}
+					bool bEnabled = !pItem->GetEnabled();
+					int iCost = pItem->GetCost();
 
-				std::string sTitle = pItem->GetDisplay();
+					std::string sUpdate;
+					sUpdate.append("{");
 
-				int iResult = system(sCommand.c_str());
-				if (iResult == 1)
-				{
-					//purple
-					mConnectionManager->SetImage(kButtonColourPurple, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-				}
-				else if (iResult == 2)
-				{
-					mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-				}
-				else if (iResult == 3)
-				{ //green
-					mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-					if (atoi(pItem->GetAmount().c_str()) > 0)
+					int iTotal = atoi(pItem->GetAmount().c_str());
+					if (iTotal >= 0)
 					{
-						sTitle.append("\n");
-						sTitle.append(pItem->GetAmount());
+						sUpdate.append("\"quantity\":{\"total\":");
+						sUpdate.append(std::to_string(iTotal));
+						sUpdate.append(",\"current\":");
+						sUpdate.append(std::to_string(iTotal));
+						sUpdate.append("},");
 					}
-					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-				}
-				else
-				{// yellow 
-					mConnectionManager->SetImage(kButtonColourYellow, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
-					mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					else
+					{
+						sUpdate.append("\"quantity\":{\"total\":-1,\"current\":-1},");
+					}
+					if (bEnabled) { sUpdate.append("\"enabled\":true,\"name\":\""); }
+					else { sUpdate.append("\"enabled\":false,\"name\":\""); }
+
+					sUpdate.append(pItem->GetItem());
+					sUpdate.append("\",\"cost\":");
+					sUpdate.append(std::to_string(iCost));
+					sUpdate.append(",\"description\":\"");
+					sUpdate.append(pItem->GetDescription());
+					
+					if (pItem->GetSubscribers())
+					{
+						sUpdate.append("\",\"subscriberOnly\":true");
+					}
+					else
+					{
+						sUpdate.append("\",\"subscriberOnly\":false");
+					}
+
+					sUpdate.append("}");
+
+					CURL* hndp = curl_easy_init();
+
+					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+					sURL.append(pItem->GetChannel());
+					sURL.append("/items/");
+					sURL.append(sID);
+
+					curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
+
+					curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
+					curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
+
+					struct curl_slist* headersp = NULL;
+					std::string sAuth = "authorization: Bearer ";
+					sAuth.append(m_sAPI);
+					headersp = curl_slist_append(headersp, "Accept: ");
+					headersp = curl_slist_append(headersp, sAuth.c_str());
+					headersp = curl_slist_append(headersp, "Content-Type: application/json");
+					curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
+					curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
+
+					long httpCodep(0);
+					std::unique_ptr<std::string> httpDatap(new std::string());
+
+					curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
+
+					curl_easy_perform(hndp);
+					curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
+					curl_easy_cleanup(hndp);
+					std::string sTitle = pItem->GetDisplay();
+					if (httpCodep == 200)
+					{
+
+						if (bEnabled)
+						{
+							mConnectionManager->SetImage(kButtonColourGreen, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							if (atoi(pItem->GetAmount().c_str()) > 0)
+							{
+								sTitle.append("\n");
+								sTitle.append(pItem->GetAmount());
+							}
+							mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							pItem->SetEnabled(true);
+						}
+						else
+						{
+							mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+							pItem->SetEnabled(false);
+						}
+					}
+					else
+					{
+							
+						mConnectionManager->SetImage(kButtonColourPurple, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+						mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					}
 				}
 			}
 		}
 		else if (strcmp(inAction.c_str(), kActionNameClose) == 0)
 		{
-			//do something
 			CStore* pStore = m_pContextManager->GetStore(inContext);
 			if (pStore)
 			{
-				std::string sCommand;
-				sCommand.append("SE-SD.exe ");
-				sCommand.append(pStore->GetChannel());
-				sCommand.append(" close ");
-				sCommand.append(m_sAPI);
-
-				int iResult = system(sCommand.c_str());
-				if (iResult == 1)
+				list < CItem* > ::iterator iter;
+				for (iter = m_pContextManager->IterItemBegin(); iter != m_pContextManager->IterItemEnd(); iter++)
 				{
+					CItem* pItem = (*iter);
+					if (strcmp(pStore->GetChannel().c_str(), pItem->GetChannel().c_str()) == 0)
+					{
+						if (pItem->GetEnabled())
+						{
+							bool bEnabled = !pItem->GetEnabled();
+							int iCost = pItem->GetCost();
+
+							std::string sUpdate;
+							sUpdate.append("{");
+
+							int iTotal = atoi(pItem->GetAmount().c_str());
+							if (iTotal >= 0)
+							{
+								sUpdate.append("\"quantity\":{\"total\":");
+								sUpdate.append(std::to_string(iTotal));
+								sUpdate.append(",\"current\":");
+								sUpdate.append(std::to_string(iTotal));
+								sUpdate.append("},");
+							}
+							else
+							{
+								sUpdate.append("\"quantity\":{\"total\":-1,\"current\":-1},");
+							}
+							sUpdate.append("\"enabled\":false,\"name\":\"");
+
+							sUpdate.append(pItem->GetItem());
+							sUpdate.append("\",\"cost\":");
+							sUpdate.append(std::to_string(iCost));
+							sUpdate.append(",\"description\":\"");
+							sUpdate.append(pItem->GetDescription());
+							if (pItem->GetSubscribers())
+							{
+								sUpdate.append("\",\"subscriberOnly\":true");
+							}
+							else
+							{
+								sUpdate.append("\",\"subscriberOnly\":false");
+							}
+
+							sUpdate.append("}");
+
+							CURL* hndp = curl_easy_init();
+
+							std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+							sURL.append(pItem->GetChannel());
+							sURL.append("/items/");
+							sURL.append(pItem->GetID());
+
+							curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
+
+							curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
+							curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
+
+							struct curl_slist* headersp = NULL;
+							std::string sAuth = "authorization: Bearer ";
+							sAuth.append(m_sAPI);
+							headersp = curl_slist_append(headersp, "Accept: ");
+							headersp = curl_slist_append(headersp, sAuth.c_str());
+							headersp = curl_slist_append(headersp, "Content-Type: application/json");
+							curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
+							curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
+
+							long httpCodep(0);
+							std::unique_ptr<std::string> httpDatap(new std::string());
+
+							curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
+
+							curl_easy_perform(hndp);
+							curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
+							curl_easy_cleanup(hndp);
+							std::string sTitle = pItem->GetDisplay();
+							if (httpCodep == 200)
+							{
+								mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+								mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+								pItem->SetEnabled(false);
+							}
+						}
+					}
 					mConnectionManager->SetImage(kButtonColourRed, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 				}
-				else
+			}
+		}
+		else if (strcmp(inAction.c_str(), kActionNameCost) == 0)
+		{
+			CCost* pCost = m_pContextManager->GetCost(inContext);
+			if (pCost)
+			{
+				std::string sID = pCost->GetID();
+				if (sID != "")
 				{
-					mConnectionManager->SetImage(kButtonColourYellow, pStore->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					bool bEnabled = pCost->GetEnabled();
+					std::string sCost = "";
+
+					if (pCost->GetCost() == atoi(pCost->GetCost1().c_str()))
+					{
+						sCost = pCost->GetCost2();
+					}
+					else
+					{
+						sCost = pCost->GetCost1();
+					}
+
+					std::string sUpdate;
+					sUpdate.append("{");
+					if (bEnabled) { sUpdate.append("\"enabled\":true,\"name\":\""); }
+					else { sUpdate.append("\"enabled\":false,\"name\":\""); }
+
+					sUpdate.append(pCost->GetItem());
+					sUpdate.append("\",\"cost\":");
+
+						
+					sUpdate.append(sCost);
+					sUpdate.append(",\"description\":\"");
+					sUpdate.append(pCost->GetDescription());
+					if (pCost->GetSubscribers())
+					{
+						sUpdate.append("\",\"subscriberOnly\":true");
+					}
+					else
+					{
+						sUpdate.append("\",\"subscriberOnly\":false");
+					}
+
+					sUpdate.append("}");
+
+					CURL* hndp = curl_easy_init();
+
+					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+					sURL.append(pCost->GetChannel());
+					sURL.append("/items/");
+					sURL.append(sID);
+
+					curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
+
+					curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
+					curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
+
+					struct curl_slist* headersp = NULL;
+					std::string sAuth = "authorization: Bearer ";
+					sAuth.append(m_sAPI);
+					headersp = curl_slist_append(headersp, "Accept: ");
+					headersp = curl_slist_append(headersp, sAuth.c_str());
+					headersp = curl_slist_append(headersp, "Content-Type: application/json");
+					curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
+					curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
+
+					long httpCodep(0);
+					std::unique_ptr<std::string> httpDatap(new std::string());
+
+					curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
+
+					curl_easy_perform(hndp);
+					curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
+					curl_easy_cleanup(hndp);
+					if (httpCodep == 200)
+					{
+						std::string sTitle = pCost->GetDisplay();
+						sTitle.append("\n");
+						sTitle.append(sCost);
+						mConnectionManager->SetTitle(sTitle, pCost->GetContext(), kESDSDKTarget_HardwareAndSoftware);
+					}
 				}
 			}
 		}
@@ -379,7 +578,7 @@ void StreamElementsStore::WillAppearForAction(const std::string& inAction, const
 
 void StreamElementsStore::WillDisappearForAction(const std::string& inAction, const std::string& inContext, const json &inPayload, const std::string& inDeviceID)
 {
-
+	//mConnectionManager->LogMessage("w1");
 	// Remove the context
 	//std::string sSerialized = inPayload.dump();
 	//mConnectionManager->LogMessage(sSerialized);
@@ -397,6 +596,14 @@ void StreamElementsStore::WillDisappearForAction(const std::string& inAction, co
 		if (!pStore)
 		{
 			m_pContextManager->Remove(pStore);
+		}
+	}
+	else if (strcmp(inAction.c_str(), kActionNameCost) == 0)
+	{
+		CCost* pCost = m_pContextManager->GetCost(inContext);
+		if (!pCost)
+		{
+			m_pContextManager->Remove(pCost);
 		}
 	}
 }
@@ -423,8 +630,10 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 {
 	//std::string sSerialized = inPayload.dump();
 	//mConnectionManager->LogMessage(inAction);
+	//mConnectionManager->LogMessage("r1");
 	if (strcmp(inAction.c_str(), kActionNameItem) == 0)
 	{
+		
 		CItem* pItem = m_pContextManager->GetItem(inContext);
 		if (!pItem)
 		{
@@ -450,6 +659,22 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 		else
 		{
 			pStore->UpdateSettings(inPayload);
+		}
+	}
+	else if (strcmp(inAction.c_str(), kActionNameCost) == 0)
+	{
+		CCost* pCost = m_pContextManager->GetCost(inContext);
+		if (!pCost)
+		{
+			pCost = m_pContextManager->AddCost(inContext, inPayload);
+			pCost->SetDisplay(ReformDisplay(pCost->GetDisplay()));
+			mConnectionManager->SetTitle(pCost->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
+		}
+		else
+		{
+			pCost->UpdateSettings(inPayload);
+			pCost->SetDisplay(ReformDisplay(pCost->GetDisplay()));
+			mConnectionManager->SetTitle(pCost->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
 		}
 	}
 }

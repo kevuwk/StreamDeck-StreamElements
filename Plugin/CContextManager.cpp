@@ -24,12 +24,22 @@ CStore* CContextManager::AddStore(std::string inContext, const json& inPayload)
     return NULL;
 }
 
+CCost* CContextManager::AddCost(std::string inContext, const json& inPayload)
+{
+    CCost* pCost = new CCost(inContext, inPayload);
+    if (pCost)
+    {
+        m_Costs.push_back(pCost);
+        return pCost;
+    }
+    return NULL;
+}
+
 CItem* CContextManager::GetItem(std::string inContext)
 {
     list < CItem* > ::iterator iter;
     for (iter = m_Items.begin(); iter != m_Items.end(); iter++)
     {
-        //if ((*iter)->GetContext() == inContext)
         if (strcmp((*iter)->GetContext().c_str(), inContext.c_str()) == 0)
         {
             return *iter;
@@ -43,7 +53,6 @@ CItem* CContextManager::GetItem(std::string sChannel, std::string sItem)
     list < CItem* > ::iterator iter;
     for (iter = m_Items.begin(); iter != m_Items.end(); iter++)
     {
-        //if ((*iter)->GetContext() == inContext)
         if (strcmp((*iter)->GetChannel().c_str(), sChannel.c_str()) == 0)
         {
             if (strcmp((*iter)->GetItem().c_str(), sItem.c_str()) == 0)
@@ -60,10 +69,38 @@ CStore* CContextManager::GetStore(std::string inContext)
     list < CStore* > ::iterator iter;
     for (iter = m_Stores.begin(); iter != m_Stores.end(); iter++)
     {
-        //if ((*iter)->GetContext() == inContext)
         if (strcmp((*iter)->GetContext().c_str(), inContext.c_str()) == 0)
         {
             return *iter;
+        }
+    }
+    return NULL;
+}
+
+CCost* CContextManager::GetCost(std::string inContext)
+{
+    list < CCost* > ::iterator iter;
+    for (iter = m_Costs.begin(); iter != m_Costs.end(); iter++)
+    {
+        if (strcmp((*iter)->GetContext().c_str(), inContext.c_str()) == 0)
+        {
+            return *iter;
+        }
+    }
+    return NULL;
+}
+
+CCost* CContextManager::GetCost(std::string sChannel, std::string sItem)
+{
+    list < CCost* > ::iterator iter;
+    for (iter = m_Costs.begin(); iter != m_Costs.end(); iter++)
+    {
+        if (strcmp((*iter)->GetChannel().c_str(), sChannel.c_str()) == 0)
+        {
+            if (strcmp((*iter)->GetItem().c_str(), sItem.c_str()) == 0)
+            {
+                return *iter;
+            }
         }
     }
     return NULL;
@@ -84,17 +121,38 @@ list <std::string> CContextManager::GetChannels ( void )
     list < CItem* > ::iterator iter;
     for (iter = m_Items.begin(); iter != m_Items.end(); iter++)
     {
-        bool bExists = false;
-        // is unique?
-        list <std::string> ::iterator sIter;
-        for (sIter = sChannels.begin(); sIter != sChannels.end(); sIter++)
+        if ((*iter)->GetChannel() != "")
         {
-            if (strcmp((*iter)->GetChannel().c_str(), (sIter)->c_str()) == 0)
+            bool bExists = false;
+            // is unique?
+            list <std::string> ::iterator sIter;
+            for (sIter = sChannels.begin(); sIter != sChannels.end(); sIter++)
             {
-                bExists = true;
+                if (strcmp((*iter)->GetChannel().c_str(), (sIter)->c_str()) == 0)
+                {
+                    bExists = true;
+                }
             }
+            if (!bExists) { sChannels.push_back((*iter)->GetChannel()); }
         }
-        if (!bExists) { sChannels.push_back((*iter)->GetChannel()); }
+    }
+    list < CCost* > ::iterator iterc;
+    for (iterc = m_Costs.begin(); iterc != m_Costs.end(); iterc++)
+    {
+        if ((*iterc)->GetChannel() != "")
+        {
+            bool bExists = false;
+            // is unique?
+            list <std::string> ::iterator sIter;
+            for (sIter = sChannels.begin(); sIter != sChannels.end(); sIter++)
+            {
+                if (strcmp((*iterc)->GetChannel().c_str(), (sIter)->c_str()) == 0)
+                {
+                    bExists = true;
+                }
+            }
+            if (!bExists) { sChannels.push_back((*iter)->GetChannel()); }
+        }
     }
     return sChannels;
 }
@@ -123,6 +181,12 @@ void CContextManager::Remove(CStore* pStore)
     delete pStore;
 }
 
+void CContextManager::Remove(CCost* pCost)
+{
+    m_Costs.remove(pCost);
+    delete pCost;
+}
+
 void CContextManager::RemoveAll(void)
 {
     list < CItem* > ::iterator iter;
@@ -131,4 +195,18 @@ void CContextManager::RemoveAll(void)
         delete* iter;
     }
     m_Items.clear();
+
+    list < CStore* > ::iterator iters;
+    for (iters = m_Stores.begin(); iters != m_Stores.end(); iters++)
+    {
+        delete* iters;
+    }
+    m_Stores.clear();
+
+    list < CCost* > ::iterator iterc;
+    for (iterc = m_Costs.begin(); iterc != m_Costs.end(); iterc++)
+    {
+        delete* iterc;
+    }
+    m_Costs.clear();
 }

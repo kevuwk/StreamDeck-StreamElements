@@ -12,8 +12,13 @@
 #include <json.hpp>
 #include "CContextManager.h"
 
+/*#define kActionNameItem  "plugin.test.test.item"
+#define kActionNameClose "plugin.test.test.close"
+#define kActionNameCost  "plugin.test.test.cost"*/
+
 #define kActionNameItem  "plugin.streamelements.store.item"
 #define kActionNameClose "plugin.streamelements.store.close"
+#define kActionNameCost  "plugin.streamelements.store.cost"
 
 #define kButtonColourBlue "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADCSURBVHhe7dwhEsIwFADR0DPV13LkWjx3ahGRhPXMeybfZueLqDyO5/saLG3zZEGgIFAQKAgUBAoChXwHvc59Tv/pc/85fWeDgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQK/g8KNigIFAQKAgWBgkBBoJ/GuAFOPAqEPozxcQAAAABJRU5ErkJggg=="
 #define kButtonColourGreen "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAADDSURBVHhe7dyxDcIwEEBRk1EyTyRmjcQ8rJJQuMT8Hr3X+Fp/XeHKj/08rsHSNk8WBAoCBYGCQEGgIFDId9D7+ZrTf/rcf07f2aAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYL/g4INCgIFgYJAQaAgUBDopzFudu4J6Pf08/IAAAAASUVORK5CYII="

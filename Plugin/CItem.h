@@ -30,6 +30,21 @@ public:
 
     std::string         GetAmount(void) { return m_sAmount; }
 
+    void                SetID(std::string sID) { m_sID = sID; }
+    std::string         GetID(void) { return m_sID; }
+
+    void                SetEnabled(bool bEnabled) { m_bEnabled = bEnabled; }
+    bool                GetEnabled(void) { return m_bEnabled; }
+
+    void                SetCost(int iCost) { m_iCost = iCost; }
+    int                 GetCost(void) { return m_iCost; }
+
+    void                SetDescription(std::string sDescription) { m_sDescription = sDescription; }
+    std::string         GetDescription(void) { return m_sDescription; }
+
+    void                SetSubscribers(bool bSubscribers) { m_bSubscribers = bSubscribers; }
+    bool                GetSubscribers(void) { return m_bSubscribers; }
+
     bool                GetUpdated(void) { return m_bUpdated; }
     void                ResetUpdated(void) { m_bUpdated = false; }
     void                SetUpdated(void) { m_bUpdated = true; }
@@ -44,6 +59,12 @@ private:
     std::string m_sChannel;
     std::string m_sItem;
     std::string m_sAmount;
+
+    std::string m_sID;
+    bool m_bEnabled;
+    int m_iCost;
+    std::string m_sDescription;
+    bool m_bSubscribers;
 
     bool m_bUpdated;
 };

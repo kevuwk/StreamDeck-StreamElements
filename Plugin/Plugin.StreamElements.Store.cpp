@@ -158,6 +158,7 @@ void StreamElementsStore::UpdateTimer()
 
 				curl_easy_perform(hnd);
 				curl_easy_getinfo(hnd, CURLINFO_RESPONSE_CODE, &httpCode);
+				curl_easy_cleanup(hnd);
 				if (httpCode == 200)
 				{
 					auto parsed_json = json::parse(*httpData.get());

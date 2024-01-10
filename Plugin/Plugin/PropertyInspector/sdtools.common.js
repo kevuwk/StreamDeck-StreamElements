@@ -115,20 +115,71 @@ function websocketOnMessage(evt) {
 					eList.value = vValue;
 				}
 			}
-		}			
-    }
-    else if (jsonObj.event === 'didReceiveSettings') {
-        var payload = jsonObj.payload;
-        loadConfiguration(payload.settings);
-    }
-    else {
-        console.log("Unhandled websocketOnMessage: " + jsonObj.event);
-    }
+		}
+		if ( document.getElementById("channelDrop").options.length < 1 )
+		{
+			document.getElementById("channelDrop").style.display = "none";
+			document.getElementById("dvChannel2").style.display = "none";
+		}
+		else
+		{
+			document.getElementById("channelDrop").style.display = "";
+			document.getElementById("dvChannel2").style.display = "";
+			if ( document.getElementById("itemDrop").options.length < 1 )
+			{
+				document.getElementById("itemDrop").style.display = "none";
+				document.getElementById("dvItem2").style.display = "none";
+				
+				if ( actionInfo.action == "plugin.streamelements.store.item" )
+				{
+					document.getElementById("amountString").style.display = "none";
+					document.getElementById("dvAmount").style.display = "none";
+				}
+				
+				if ( actionInfo.action == "plugin.streamelements.store.cost" )
+				{
+					document.getElementById("cost1String").style.display = "none";
+					document.getElementById("dvCost1").style.display = "none";
+				
+					document.getElementById("cost2String").style.display = "none";
+					document.getElementById("dvCost2").style.display = "none";
+				}
+			}
+			else
+			{
+				document.getElementById("itemDrop").style.display = "";
+				document.getElementById("dvItem2").style.display = "";
+				
+				if ( actionInfo.action == "plugin.streamelements.store.item" )
+				{
+					document.getElementById("amountString").style.display = "";
+					document.getElementById("dvAmount").style.display = "";
+				}
+				
+				if ( actionInfo.action == "plugin.streamelements.store.cost" )
+				{
+					document.getElementById("cost1String").style.display = "";
+					document.getElementById("dvCost1").style.display = "";
+				
+					document.getElementById("cost2String").style.display = "";
+					document.getElementById("dvCost2").style.display = "";
+				}
+			}
+		}		
+	}
+	else if (jsonObj.event === 'didReceiveSettings') {
+		var payload = jsonObj.payload;
+		loadConfiguration(payload.settings);
+	}
+	else {
+		console.log("Unhandled websocketOnMessage: " + jsonObj.event);
+	}
 }
 
 function loadConfiguration(payload) {
     console.log('loadConfiguration');
     console.log(payload);
+	console.log ( actionInfo.action );
     for (var key in payload) {
         try {
             var elem = document.getElementById(key);
@@ -167,6 +218,56 @@ function loadConfiguration(payload) {
             console.log("loadConfiguration failed for key: " + key + " - " + err);
         }
     }
+	if ( document.getElementById("channelDrop").options.length < 1 )
+	{
+		document.getElementById("channelDrop").style.display = "none";
+		document.getElementById("dvChannel2").style.display = "none";
+	}
+	else
+	{
+		document.getElementById("channelDrop").style.display = "";
+		document.getElementById("dvChannel2").style.display = "";
+		if ( document.getElementById("itemDrop").options.length < 1 )
+		{
+			document.getElementById("itemDrop").style.display = "none";
+			document.getElementById("dvItem2").style.display = "none";
+			
+			if ( actionInfo.action == "plugin.streamelements.store.item" )
+			{
+				document.getElementById("amountString").style.display = "none";
+				document.getElementById("dvAmount").style.display = "none";
+			}
+			
+			if ( actionInfo.action == plugin.streamelements.store.cost )
+			{
+				document.getElementById("cost1String").style.display = "none";
+				document.getElementById("dvCost1").style.display = "none";
+				
+				document.getElementById("cost2String").style.display = "none";
+				document.getElementById("dvCost2").style.display = "none";
+			}
+		}
+		else
+		{
+			document.getElementById("itemDrop").style.display = "";
+			document.getElementById("dvItem2").style.display = "";
+			
+			if ( actionInfo.action == "plugin.streamelements.store.item" )
+			{
+				document.getElementById("amountString").style.display = "";
+				document.getElementById("dvAmount").style.display = "";
+			}
+			
+			if ( actionInfo.action == plugin.streamelements.store.cost )
+			{
+				document.getElementById("cost1String").style.display = "";
+				document.getElementById("dvCost1").style.display = "";
+				
+				document.getElementById("cost2String").style.display = "";
+				document.getElementById("dvCost2").style.display = "";
+			}
+		}
+	}	
 }
 
 function setSettings() {

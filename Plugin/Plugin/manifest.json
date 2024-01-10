@@ -55,7 +55,7 @@
   "Name": "StreamElements Store",
   "Icon": "pluginIcon",
   "URL": "https://github.com/kevuwk/StreamDeck-StreamElements",
-  "Version": "0.6",
+  "Version": "0.7",
   "OS": [
     {
       "Platform": "mac",

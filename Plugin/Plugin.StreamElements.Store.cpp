@@ -533,8 +533,6 @@ void StreamElementsStore::DeviceDidDisconnect(const std::string& inDeviceID)
 
 void StreamElementsStore::SendToPlugin(const std::string& inAction, const std::string& inContext, const json &inPayload, const std::string& inDeviceID)
 {
-	// Nothing to do
-	//mConnectionManager->LogMessage("test3");
 	//std::string sSerialized = inPayload.dump();
 	//mConnectionManager->LogMessage(sSerialized);
 	//{"property_inspector":"propertyInspectorConnected"}
@@ -552,46 +550,17 @@ void StreamElementsStore::SendToPlugin(const std::string& inAction, const std::s
 				CItem* pItem = m_pContextManager->GetItem(inContext);
 				if (pItem)
 				{
-					auto jsonItems = json::array();
-					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
-					sURL.append(pItem->GetChannel().c_str());
-					sURL.append("/items/?limit=&offset=");
-					std::unique_ptr<std::string> httpData(APIGet(sURL));
-					if (httpData)
-					{
-						auto parsed_json = json::parse(*httpData.get());
-						auto jBegin = parsed_json.begin();
-						nlohmann::detail::iter_impl<nlohmann::json> iter;
-						for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
-						{
-							json jsonData = *iter;
-							jsonItems.push_back(jsonData["name"]);
-						}
-					}
-					std::string sAction = "itemList";
-					mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+					SendDataToPlugin(pItem->GetChannel(), inContext);
 				}
 				CCost* pCost = m_pContextManager->GetCost(inContext);
 				if (pCost)
 				{
-					auto jsonItems = json::array();
-					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
-					sURL.append(pCost->GetChannel().c_str());
-					sURL.append("/items/?limit=&offset=");
-					std::unique_ptr<std::string> httpData(APIGet(sURL));
-					if (httpData)
-					{
-						auto parsed_json = json::parse(*httpData.get());
-						auto jBegin = parsed_json.begin();
-						nlohmann::detail::iter_impl<nlohmann::json> iter;
-						for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
-						{
-							json jsonData = *iter;
-							jsonItems.push_back(jsonData["name"]);
-						}
-					}
-					std::string sAction = "itemList";
-					mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+					SendDataToPlugin(pCost->GetChannel(), inContext);
+				}
+				CStore* pStore = m_pContextManager->GetStore(inContext);
+				if (pStore)
+				{
+					SendDataToPlugin(pStore->GetChannel(), inContext);
 				}
 			}
 		}
@@ -620,24 +589,7 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 			mConnectionManager->SetTitle(pItem->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
 			if (pItem->GetItem().length() == 0)
 			{
-				auto jsonItems = json::array();
-				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
-				sURL.append(pItem->GetChannel().c_str());
-				sURL.append("/items/?limit=&offset=");
-				std::unique_ptr<std::string> httpData(APIGet(sURL));
-				if (httpData)
-				{
-					auto parsed_json = json::parse(*httpData.get());
-					auto jBegin = parsed_json.begin();
-					nlohmann::detail::iter_impl<nlohmann::json> iter;
-					for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
-					{
-						json jsonData = *iter;
-						jsonItems.push_back(jsonData["name"]);
-					}
-				}
-				std::string sAction = "itemList";
-				mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+				SendDataToPlugin(pItem->GetChannel(), inContext);
 			}
 		}
 	}
@@ -651,6 +603,7 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 		else
 		{
 			pStore->UpdateSettings(inPayload);
+			SendDataToPlugin(pStore->GetChannel(), inContext);
 		}
 	}
 	else if (strcmp(inAction.c_str(), kActionNameCost) == 0)
@@ -661,6 +614,7 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 			pCost = m_pContextManager->AddCost(inContext, inPayload);
 			pCost->SetDisplay(ReformDisplay(pCost->GetDisplay()));
 			mConnectionManager->SetTitle(pCost->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
+			
 		}
 		else
 		{
@@ -669,24 +623,7 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 			mConnectionManager->SetTitle(pCost->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
 			if (pCost->GetItem().length() == 0)
 			{
-				auto jsonItems = json::array();
-				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
-				sURL.append(pCost->GetChannel().c_str());
-				sURL.append("/items/?limit=&offset=");
-				std::unique_ptr<std::string> httpData(APIGet(sURL));
-				if (httpData)
-				{
-					auto parsed_json = json::parse(*httpData.get());
-					auto jBegin = parsed_json.begin();
-					nlohmann::detail::iter_impl<nlohmann::json> iter;
-					for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
-					{
-						json jsonData = *iter;
-						jsonItems.push_back(jsonData["name"]);
-					}
-				}
-				std::string sAction = "itemList";
-				mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+				SendDataToPlugin(pCost->GetChannel(), inContext);
 			}
 		}
 	}
@@ -812,4 +749,54 @@ std::unique_ptr<std::string> StreamElementsStore::APIGet (std::string sURL)
 		return httpData;
 	}
 	return NULL;
+}
+
+void StreamElementsStore::SendDataToPlugin(std::string sStore, std::string inContext)
+{
+	auto jsonChannels = json::array();
+	std::string sCURL = "https://api.streamelements.com/kappa/v2/users/current";
+	std::unique_ptr<std::string> httpChannels(APIGet(sCURL));
+	if (httpChannels)
+	{
+		auto parsed_json = json::parse(*httpChannels.get());
+		auto jChannels = parsed_json["channels"];
+		nlohmann::detail::iter_impl<nlohmann::json> iter;
+		for (iter = jChannels.begin(); iter != jChannels.end(); iter++)
+		{
+			json jsonData = *iter;
+			std::string sID = jsonData["_id"];
+			std::string sDN = jsonData["displayName"];
+			auto jtChannel = json::array();
+			jtChannel.push_back(sID);
+			jtChannel.push_back(sDN);
+			jsonChannels.push_back(jtChannel);
+		}
+	}
+	auto jResult = json::array();
+	jResult.push_back("channels");
+	jResult.push_back(jsonChannels);
+	std::string sCAction = "channels";
+	mConnectionManager->SendToPropertyInspector(sCAction, inContext, jResult);
+
+	auto jsonItems = json::array();
+	std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+	sURL.append(sStore);
+	sURL.append("/items/?limit=&offset=");
+	std::unique_ptr<std::string> httpData(APIGet(sURL));
+	if (httpData)
+	{
+		auto parsed_json = json::parse(*httpData.get());
+		auto jBegin = parsed_json.begin();
+		nlohmann::detail::iter_impl<nlohmann::json> iter;
+		for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
+		{
+			json jsonData = *iter;
+			jsonItems.push_back(jsonData["name"]);
+		}
+	}
+	auto jIResult = json::array();
+	jIResult.push_back("list");
+	jIResult.push_back(jsonItems);
+	std::string sAction = "itemList";
+	mConnectionManager->SendToPropertyInspector(sAction, inContext, jIResult);
 }

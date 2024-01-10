@@ -20,10 +20,10 @@
                 <textarea type="textarea" oninput="setSettings()" class="sdProperty" id="displayString" placeholder=""></textarea>
 			</span>
         </div>
-        <div class="sdpi-item" id="dvChannel">
+        <div class="sdpi-item" id="dvChannel2">
             <div class="sdpi-item-label">Channel</div>
-            <input class="sdpi-item-value sdProperty" placeholder="" value="" id="channelString" oninput="setSettings()">
-        </div>
+			<select class="sdpi-item-value select sdProperty sdList" id="channelDrop" oninput="setSettings()" sdListTextProperty="channelDrop" sdListValueProperty="channelDrop" sdValueField="channelDrop"></select>
+		</div>
 		<div class="sdpi-item" id="dvItem2">
             <div class="sdpi-item-label">Store Item</div>
 			<select class="sdpi-item-value select sdProperty sdList" id="itemDrop" oninput="setSettings()" sdListTextProperty="itemDrop" sdListValueProperty="itemDrop" sdValueField="itemDrop">

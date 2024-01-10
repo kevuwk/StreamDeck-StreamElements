@@ -58,6 +58,8 @@ private:
 	void UpdateTimer();
 	std::string ReformDisplay(std::string sText);
 
+	void SendDataToPlugin(std::string sStore, std::string inContext);
+
 	std::string m_sAPI;
 
 	CContextManager* m_pContextManager;

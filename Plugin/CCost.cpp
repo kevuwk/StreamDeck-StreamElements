@@ -28,7 +28,19 @@ CCost::CCost(std::string inContext, const json& inPayload)
 				else if (strcmp(its.key().c_str(), "channelString") == 0)
 				{
 					buffers << its.value();
-					m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "channelDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sChannel = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 				else if (strcmp(its.key().c_str(), "displayString") == 0)
 				{
@@ -38,7 +50,19 @@ CCost::CCost(std::string inContext, const json& inPayload)
 				else if (strcmp(its.key().c_str(), "itemString") == 0)
 				{
 					buffers << its.value();
-					m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "itemDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sItem = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}
@@ -75,7 +99,19 @@ void CCost::UpdateSettings(const json& inPayload)
 				else if (strcmp(its.key().c_str(), "channelString") == 0)
 				{
 					buffers << its.value();
-					m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "channelDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sChannel = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 				else if (strcmp(its.key().c_str(), "displayString") == 0)
 				{
@@ -85,7 +121,19 @@ void CCost::UpdateSettings(const json& inPayload)
 				else if (strcmp(its.key().c_str(), "itemString") == 0)
 				{
 					buffers << its.value();
-					m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "itemDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sItem = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}

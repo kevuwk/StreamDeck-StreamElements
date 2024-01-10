@@ -44,34 +44,78 @@ function websocketOnMessage(evt) {
     // Received message from Stream Deck
 	var jsonObj = JSON.parse(evt.data);
 	console.log ( "onMessage" );
-	console.log ( jsonObj );
+	//console.log ( jsonObj );
 
-    if (jsonObj.event === 'sendToPropertyInspector') {
+    if (jsonObj.event === 'sendToPropertyInspector')
+	{
         var payload = jsonObj.payload;
-		var elements = document.getElementsByClassName("sdProperty");
-		var eList = null;
-		Array.prototype.forEach.call(elements, function (elem) {
-			var key = elem.id;
-			if (elem.classList.contains("sdList")) { // Dynamic dropdown
-				if ( key == "itemDrop" )
+		
+		var sAction = payload[0];
+		//console.log ( sAction );
+		if ( sAction )
+		{
+			if ( sAction == "channels" )
+			{
+				var elements = document.getElementsByClassName("sdProperty");
+				var eChannel = null;
+				Array.prototype.forEach.call(elements, function (elem)
 				{
-					eList = elem;
+					var key = elem.id;
+					if (elem.classList.contains("sdList")) { // Dynamic dropdown
+						if ( key == "channelDrop" )
+						{
+							eChannel = elem;
+						}
+					}
+				});
+	
+				if ( eChannel )
+				{
+					var vValue = eChannel.value;
+					eChannel.options.length = 0;
+				
+					var aChannels = payload[1];
+					for ( var i = 0; i < aChannels.length; i++ )
+					{
+						var opt = document.createElement('option');
+						opt.value = aChannels[i][0];
+						opt.text = aChannels[i][1];
+						eChannel.appendChild(opt);
+					}
+					eChannel.value = vValue;
 				}
 			}
-		});
-		if ( eList )
-		{
-			var vValue = eList.value;
-			eList.options.length = 0;
-			for ( item of payload )
+			else if ( sAction == "list" )
 			{
-				var opt = document.createElement('option');
-				opt.value = item;
-				opt.text = item;
-				eList.appendChild(opt);
+				var elements = document.getElementsByClassName("sdProperty");
+				var eList = null;
+				Array.prototype.forEach.call(elements, function (elem)
+				{
+					var key = elem.id;
+					if (elem.classList.contains("sdList")) { // Dynamic dropdown
+						if ( key == "itemDrop" )
+						{
+							eList = elem;
+						}
+					}
+				});
+				if ( eList )
+				{
+					var vValue = eList.value;
+					eList.options.length = 0;
+					
+					var aItems = payload[1];
+					for ( var i = 0; i < aItems.length; i++ )
+					{
+						var opt = document.createElement('option');
+						opt.value = aItems[i];
+						opt.text = aItems[i];
+						eList.appendChild(opt);
+					}
+					eList.value = vValue;
+				}
 			}
-			eList.value = vValue;
-		}
+		}			
     }
     else if (jsonObj.event === 'didReceiveSettings') {
         var payload = jsonObj.payload;
@@ -108,8 +152,8 @@ function loadConfiguration(payload) {
 
                 for (var idx = 0; idx < items.options.length; idx++) {
 					var opt = document.createElement('option');
-                    opt.value = items.options[idx];
-                    opt.text = items.options[idx];
+                    opt.value = items.options[idx][0];
+                    opt.text = items.options[idx][1];
                     elem.appendChild(opt);
                 }
                 elem.value = items.value;
@@ -150,7 +194,10 @@ function setSettings() {
 			var aOptions = [];
 			for ( var i = 0; i < elem.options.length; i++ )
 			{
-				aOptions.push ( elem.options[i].value );
+				var aOptions2 = [];
+				aOptions2.push ( elem.options[i].value );
+				aOptions2.push ( elem.options[i].text );
+				aOptions.push ( aOptions2 );
 			}
 			// build json
 			var sList = { options: aOptions, value: elem.value };	

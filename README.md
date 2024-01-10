@@ -3,7 +3,7 @@ On the right there should be a button to "Show secrets". Click this.
 There should be some extra text called "JWT Token". The JWT Token is effectively login credentials 
 so do not share these with anybody.
 
-make a note of the "Account ID" and "JWT Token"
+make a note of the "JWT Token"
 
 ------
 
@@ -18,7 +18,7 @@ Title - Generally shouldn't be used and is replaced by Display Name
 
 Display Name - This should be used instead of Title. If a store item has a restricted number of redemptions then the button will display how many are left under the display name.
 
-Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
+Channel - This is the channel you want the button to work for. Choose from the dropdown. (won't populate until JWT is set).
 
 Store Item - This is the name of the store item on streamelements. Choose from the dropdown. (won't populate until channel and JWT are set).
 
@@ -50,7 +50,7 @@ __Close Store__ will close all enabled store items for the designated channel th
 
 Title - You can use the title on this button
 
-Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
+Channel - This is the channel you want the button to work for. Choose from the dropdown. (won't populate until JWT is set).
 
 This button will only work properly if you have atleast 1 'Store Item' button for the channel.
 
@@ -74,7 +74,7 @@ Title - Generally shouldn't be used and is replaced by Display Name
 
 Display Name - This should be used instead of Title. The cost will be appended automatically by the plugin.
 
-Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
+Channel - This is the channel you want the button to work for. Choose from the dropdown. (won't populate until JWT is set).
 
 Store Item - This is the name of the store item on streamelements. Choose from the dropdown. (won't populate until channel and JWT are set).
 

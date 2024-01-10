@@ -151,7 +151,7 @@ list <std::string> CContextManager::GetChannels ( void )
                     bExists = true;
                 }
             }
-            if (!bExists) { sChannels.push_back((*iter)->GetChannel()); }
+            if (!bExists) { sChannels.push_back((*iterc)->GetChannel()); }
         }
     }
     return sChannels;

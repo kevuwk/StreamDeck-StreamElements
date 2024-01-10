@@ -18,7 +18,19 @@ CStore::CStore(std::string inContext, const json& inPayload)
 				if (strcmp(its.key().c_str(), "channelString") == 0)
 				{
 					buffers << its.value();
-					m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "channelDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sChannel = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}
@@ -39,7 +51,19 @@ void CStore::UpdateSettings(const json& inPayload)
 				if (strcmp(its.key().c_str(), "channelString") == 0)
 				{
 					buffers << its.value();
-					m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sChannel = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "channelDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sChannel = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}

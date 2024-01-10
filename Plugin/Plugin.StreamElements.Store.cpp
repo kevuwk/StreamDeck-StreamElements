@@ -135,31 +135,11 @@ void StreamElementsStore::UpdateTimer()
 			{
 				bool bStoreEnabled = false;
 
-				CURL* hnd = curl_easy_init();
-				curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
 				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
 				sURL.append(sChannel->c_str());
 				sURL.append("/items/?limit=&offset=");
-				curl_easy_setopt(hnd, CURLOPT_URL, sURL.c_str());
-
-				struct curl_slist* headers = NULL;
-				headers = curl_slist_append(headers, "Accept: ");
-				std::string sAuth = "authorization: Bearer ";
-				sAuth.append(m_sAPI);
-				headers = curl_slist_append(headers, sAuth.c_str());
-				curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
-
-				long httpCode(0);
-				std::unique_ptr<std::string> httpData(new std::string());
-
-				curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, callback);
-
-				curl_easy_setopt(hnd, CURLOPT_WRITEDATA, httpData.get());
-
-				curl_easy_perform(hnd);
-				curl_easy_getinfo(hnd, CURLINFO_RESPONSE_CODE, &httpCode);
-				curl_easy_cleanup(hnd);
-				if (httpCode == 200)
+				std::unique_ptr<std::string> httpData(APIGet(sURL));
+				if (httpData)
 				{
 					auto parsed_json = json::parse(*httpData.get());
 					auto jBegin = parsed_json.begin();
@@ -328,35 +308,12 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 
 					sUpdate.append("}");
 
-					CURL* hndp = curl_easy_init();
-
 					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
 					sURL.append(pItem->GetChannel());
 					sURL.append("/items/");
 					sURL.append(sID);
 
-					curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
-
-					curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
-					curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
-
-					struct curl_slist* headersp = NULL;
-					std::string sAuth = "authorization: Bearer ";
-					sAuth.append(m_sAPI);
-					headersp = curl_slist_append(headersp, "Accept: ");
-					headersp = curl_slist_append(headersp, sAuth.c_str());
-					headersp = curl_slist_append(headersp, "Content-Type: application/json");
-					curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
-					curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
-
-					long httpCodep(0);
-					std::unique_ptr<std::string> httpDatap(new std::string());
-
-					curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
-
-					curl_easy_perform(hndp);
-					curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
-					curl_easy_cleanup(hndp);
+					long httpCodep = APIPut(sURL, sUpdate);
 					std::string sTitle = pItem->GetDisplay();
 					if (httpCodep == 200)
 					{
@@ -438,38 +395,15 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 
 							sUpdate.append("}");
 
-							CURL* hndp = curl_easy_init();
-
 							std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
 							sURL.append(pItem->GetChannel());
 							sURL.append("/items/");
 							sURL.append(pItem->GetID());
 
-							curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
-
-							curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
-							curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
-
-							struct curl_slist* headersp = NULL;
-							std::string sAuth = "authorization: Bearer ";
-							sAuth.append(m_sAPI);
-							headersp = curl_slist_append(headersp, "Accept: ");
-							headersp = curl_slist_append(headersp, sAuth.c_str());
-							headersp = curl_slist_append(headersp, "Content-Type: application/json");
-							curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
-							curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
-
-							long httpCodep(0);
-							std::unique_ptr<std::string> httpDatap(new std::string());
-
-							curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
-
-							curl_easy_perform(hndp);
-							curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
-							curl_easy_cleanup(hndp);
-							std::string sTitle = pItem->GetDisplay();
+							long httpCodep = APIPut(sURL, sUpdate);
 							if (httpCodep == 200)
 							{
+								std::string sTitle = pItem->GetDisplay();
 								mConnectionManager->SetImage(kButtonColourRed, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								mConnectionManager->SetTitle(sTitle, pItem->GetContext(), kESDSDKTarget_HardwareAndSoftware);
 								pItem->SetEnabled(false);
@@ -523,35 +457,12 @@ void StreamElementsStore::KeyDownForAction(const std::string& inAction, const st
 
 					sUpdate.append("}");
 
-					CURL* hndp = curl_easy_init();
-
 					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
 					sURL.append(pCost->GetChannel());
 					sURL.append("/items/");
 					sURL.append(sID);
 
-					curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
-
-					curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
-					curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
-
-					struct curl_slist* headersp = NULL;
-					std::string sAuth = "authorization: Bearer ";
-					sAuth.append(m_sAPI);
-					headersp = curl_slist_append(headersp, "Accept: ");
-					headersp = curl_slist_append(headersp, sAuth.c_str());
-					headersp = curl_slist_append(headersp, "Content-Type: application/json");
-					curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
-					curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
-
-					long httpCodep(0);
-					std::unique_ptr<std::string> httpDatap(new std::string());
-
-					curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
-
-					curl_easy_perform(hndp);
-					curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
-					curl_easy_cleanup(hndp);
+					long httpCodep = APIPut(sURL, sUpdate);
 					if (httpCodep == 200)
 					{
 						std::string sTitle = pCost->GetDisplay();
@@ -575,6 +486,7 @@ void StreamElementsStore::WillAppearForAction(const std::string& inAction, const
 {
 	// just pass to DidReceiveSettings
 	DidReceiveSettings(inAction, inContext, inPayload, inDeviceID);
+	// send back store items?
 }
 
 void StreamElementsStore::WillDisappearForAction(const std::string& inAction, const std::string& inContext, const json &inPayload, const std::string& inDeviceID)
@@ -625,6 +537,65 @@ void StreamElementsStore::SendToPlugin(const std::string& inAction, const std::s
 	//mConnectionManager->LogMessage("test3");
 	//std::string sSerialized = inPayload.dump();
 	//mConnectionManager->LogMessage(sSerialized);
+	//{"property_inspector":"propertyInspectorConnected"}
+
+	for (auto it = inPayload.begin(); it != inPayload.end(); ++it)
+	{
+		std::stringstream buffer;
+		buffer << it.key() << " : " << it.value();
+		if (strcmp(it.key().c_str(), "property_inspector") == 0)
+		{
+			std::stringstream buffers;
+			buffers << it.value();
+			if (strcmp(buffers.str().substr(1, buffers.str().length() - 2).c_str(), "propertyInspectorConnected") == 0)
+			{
+				CItem* pItem = m_pContextManager->GetItem(inContext);
+				if (pItem)
+				{
+					auto jsonItems = json::array();
+					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+					sURL.append(pItem->GetChannel().c_str());
+					sURL.append("/items/?limit=&offset=");
+					std::unique_ptr<std::string> httpData(APIGet(sURL));
+					if (httpData)
+					{
+						auto parsed_json = json::parse(*httpData.get());
+						auto jBegin = parsed_json.begin();
+						nlohmann::detail::iter_impl<nlohmann::json> iter;
+						for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
+						{
+							json jsonData = *iter;
+							jsonItems.push_back(jsonData["name"]);
+						}
+					}
+					std::string sAction = "itemList";
+					mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+				}
+				CCost* pCost = m_pContextManager->GetCost(inContext);
+				if (pCost)
+				{
+					auto jsonItems = json::array();
+					std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+					sURL.append(pCost->GetChannel().c_str());
+					sURL.append("/items/?limit=&offset=");
+					std::unique_ptr<std::string> httpData(APIGet(sURL));
+					if (httpData)
+					{
+						auto parsed_json = json::parse(*httpData.get());
+						auto jBegin = parsed_json.begin();
+						nlohmann::detail::iter_impl<nlohmann::json> iter;
+						for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
+						{
+							json jsonData = *iter;
+							jsonItems.push_back(jsonData["name"]);
+						}
+					}
+					std::string sAction = "itemList";
+					mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+				}
+			}
+		}
+	}
 }
 
 void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const std::string& inContext, const json& inPayload, const std::string& inDeviceID)
@@ -647,7 +618,27 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 			pItem->UpdateSettings(inPayload);
 			pItem->SetDisplay(ReformDisplay(pItem->GetDisplay()));
 			mConnectionManager->SetTitle(pItem->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
-
+			if (pItem->GetItem().length() == 0)
+			{
+				auto jsonItems = json::array();
+				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+				sURL.append(pItem->GetChannel().c_str());
+				sURL.append("/items/?limit=&offset=");
+				std::unique_ptr<std::string> httpData(APIGet(sURL));
+				if (httpData)
+				{
+					auto parsed_json = json::parse(*httpData.get());
+					auto jBegin = parsed_json.begin();
+					nlohmann::detail::iter_impl<nlohmann::json> iter;
+					for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
+					{
+						json jsonData = *iter;
+						jsonItems.push_back(jsonData["name"]);
+					}
+				}
+				std::string sAction = "itemList";
+				mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+			}
 		}
 	}
 	else if (strcmp(inAction.c_str(), kActionNameClose) == 0)
@@ -676,6 +667,27 @@ void StreamElementsStore::DidReceiveSettings(const std::string& inAction, const 
 			pCost->UpdateSettings(inPayload);
 			pCost->SetDisplay(ReformDisplay(pCost->GetDisplay()));
 			mConnectionManager->SetTitle(pCost->GetDisplay(), inContext, kESDSDKTarget_HardwareAndSoftware);
+			if (pCost->GetItem().length() == 0)
+			{
+				auto jsonItems = json::array();
+				std::string sURL = "https://api.streamelements.com/kappa/v2/store/";
+				sURL.append(pCost->GetChannel().c_str());
+				sURL.append("/items/?limit=&offset=");
+				std::unique_ptr<std::string> httpData(APIGet(sURL));
+				if (httpData)
+				{
+					auto parsed_json = json::parse(*httpData.get());
+					auto jBegin = parsed_json.begin();
+					nlohmann::detail::iter_impl<nlohmann::json> iter;
+					for (iter = parsed_json.begin(); iter != parsed_json.end(); iter++)
+					{
+						json jsonData = *iter;
+						jsonItems.push_back(jsonData["name"]);
+					}
+				}
+				std::string sAction = "itemList";
+				mConnectionManager->SendToPropertyInspector(sAction, inContext, jsonItems);
+			}
 		}
 	}
 }
@@ -740,4 +752,64 @@ std::string StreamElementsStore::ReformDisplay(std::string sText)
 		i++;
 	}
 	return sReturn;
+}
+
+long StreamElementsStore::APIPut (std::string sURL, std::string sUpdate)
+{
+	CURL* hndp = curl_easy_init();
+
+	curl_easy_setopt(hndp, CURLOPT_URL, sURL.c_str());
+
+	curl_easy_setopt(hndp, CURLOPT_CUSTOMREQUEST, "PUT");
+	curl_easy_setopt(hndp, CURLOPT_POSTFIELDS, sUpdate.c_str());
+
+	struct curl_slist* headersp = NULL;
+	std::string sAuth = "authorization: Bearer ";
+	sAuth.append(m_sAPI);
+	headersp = curl_slist_append(headersp, "Accept: ");
+	headersp = curl_slist_append(headersp, sAuth.c_str());
+	headersp = curl_slist_append(headersp, "Content-Type: application/json");
+	curl_easy_setopt(hndp, CURLOPT_HTTPHEADER, headersp);
+	curl_easy_setopt(hndp, CURLOPT_WRITEFUNCTION, callback);
+
+	long httpCodep(0);
+	std::unique_ptr<std::string> httpDatap(new std::string());
+
+	curl_easy_setopt(hndp, CURLOPT_WRITEDATA, httpDatap.get());
+
+	curl_easy_perform(hndp);
+	curl_easy_getinfo(hndp, CURLINFO_RESPONSE_CODE, &httpCodep);
+	curl_easy_cleanup(hndp);
+
+	return httpCodep;
+}
+
+std::unique_ptr<std::string> StreamElementsStore::APIGet (std::string sURL)
+{
+	CURL* hnd = curl_easy_init();
+	curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
+	curl_easy_setopt(hnd, CURLOPT_URL, sURL.c_str());
+
+	struct curl_slist* headers = NULL;
+	headers = curl_slist_append(headers, "Accept: ");
+	std::string sAuth = "authorization: Bearer ";
+	sAuth.append(m_sAPI);
+	headers = curl_slist_append(headers, sAuth.c_str());
+	curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
+
+	long httpCode(0);
+	std::unique_ptr<std::string> httpData(new std::string());
+
+	curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, callback);
+
+	curl_easy_setopt(hnd, CURLOPT_WRITEDATA, httpData.get());
+
+	curl_easy_perform(hnd);
+	curl_easy_getinfo(hnd, CURLINFO_RESPONSE_CODE, &httpCode);
+	curl_easy_cleanup(hnd);
+	if (httpCode == 200)
+	{
+		return httpData;
+	}
+	return NULL;
 }

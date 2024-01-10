@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>SE Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+		<details class="message info">
+            <summary>Do not set a title, use Display Name below.</summary>
+        </details>
+        <div class="sdpi-item" id="dvDisplayName">
+            <div class="sdpi-item-label">Display Name</div>
+			<span class="sdpi-item-value textarea">
+                <textarea type="textarea" oninput="setSettings()" class="sdProperty" id="displayString" placeholder=""></textarea>
+			</span>
+        </div>
+        <div class="sdpi-item" id="dvChannel">
+            <div class="sdpi-item-label">Channel</div>
+            <input class="sdpi-item-value sdProperty" placeholder="" value="" id="channelString" oninput="setSettings()">
+        </div>
+		<div class="sdpi-item" id="dvItemList">
+            <div class="sdpi-item-label">Store Item List</div>
+			<span class="sdpi-item-value textarea">
+                <textarea type="textarea" oninput="setSettings()" class="sdProperty" id="itemString" placeholder=""></textarea>
+			</span>
+        </div>
+		<div class="sdpi-item" id="dvAPI">
+            <div class="sdpi-item-label">JWT Token</div>
+            <input class="sdpi-item-value sdProperty" placeholder="" id="jwtString">
+        </div>
+		<div class="sdpi-item" id="dvSetAPI">
+                <div class="sdpi-item-label">Set API Token</div>
+                <button class="sdpi-item-value max20" onclick="setAPI()">Set</button>
+                <p>API token will be updated within the plugin</p>
+        </div>
+    </div>
+</body>
+</html>

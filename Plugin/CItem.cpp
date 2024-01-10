@@ -33,7 +33,19 @@ CItem::CItem(std::string inContext, const json& inPayload)
 				else if (strcmp(its.key().c_str(), "itemString") == 0)
 				{
 					buffers << its.value();
-					m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "itemDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sItem = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}
@@ -75,7 +87,19 @@ void CItem::UpdateSettings(const json& inPayload)
 				else if (strcmp(its.key().c_str(), "itemString") == 0)
 				{
 					buffers << its.value();
-					m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+					//m_sItem = buffers.str().substr(1, buffers.str().length() - 2);
+				}
+				else if (strcmp(its.key().c_str(), "itemDrop") == 0)
+				{
+					for (auto itss = its.value().begin(); itss != its.value().end(); ++itss)
+					{
+						std::stringstream bufferss;
+						if (strcmp(itss.key().c_str(), "value") == 0)
+						{
+							bufferss << itss.value();
+							m_sItem = bufferss.str().substr(1, bufferss.str().length() - 2);
+						}
+					}
 				}
 			}
 		}

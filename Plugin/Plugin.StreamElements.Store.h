@@ -50,7 +50,8 @@ public:
 	void DidReceiveSettings(const std::string& inAction, const std::string& inContext, const json &inPayload, const std::string& inDeviceID) override;
 	void DidReceiveGlobalSettings(const json &inPayload) override;
 
-	
+	long APIPut(std::string sURL, std::string sUpdate);
+	std::unique_ptr<std::string> APIGet(std::string sURL);
 
 private:
 	

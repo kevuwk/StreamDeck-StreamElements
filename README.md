@@ -20,7 +20,7 @@ Display Name - This should be used instead of Title. If a store item has a restr
 
 Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
 
-Store Item - This is the exact name of the store item including capital letters. e.g. 2K Single Raffle
+Store Item - This is the name of the store item on streamelements. Choose from the dropdown. (won't populate until channel and JWT are set).
 
 Amount - This is the amount of the item that should be made available when enabled. -1 is unlimited
 
@@ -76,7 +76,7 @@ Display Name - This should be used instead of Title. The cost will be appended a
 
 Channel - This should be the ID of the channel you want to query. This is the "Account ID" captured previously.
 
-Store Item - This is the exact name of the store item including capital letters. e.g. 2K Single Raffle
+Store Item - This is the name of the store item on streamelements. Choose from the dropdown. (won't populate until channel and JWT are set).
 
 Cost 1 - This is the primary cost of the item.
 

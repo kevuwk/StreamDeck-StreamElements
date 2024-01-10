@@ -1,0 +1,72 @@
+{
+  "Actions": [
+    {
+      "Icon": "SEImage",
+      "Name": "Store Item",
+      "States": [
+        {
+          "Image": "defaultImage",
+          "TitleAlignment": "middle",
+          "FontSize": "11"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "StreamElements Store Item",
+      "UUID": "plugin.streamelements.store.item",
+	  "PropertyInspectorPath": "PropertyInspector/StreamElements.html"
+    },
+	{
+      "Icon": "SEImage",
+      "Name": "Close Store",
+      "States": [
+        {
+          "Image": "defaultImage",
+          "TitleAlignment": "middle",
+          "FontSize": "11"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "StreamElements Close Store",
+      "UUID": "plugin.streamelements.store.close",
+	  "PropertyInspectorPath": "PropertyInspector/StreamElements.Close.html"
+    },
+	{
+      "Icon": "SEImage",
+      "Name": "Change Store Item Cost",
+      "States": [
+        {
+          "Image": "costImage",
+          "TitleAlignment": "middle",
+          "FontSize": "11"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "StreamElements Change Item Cost",
+      "UUID": "plugin.streamelements.store.cost",
+	  "PropertyInspectorPath": "PropertyInspector/StreamElements.Cost.html"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "kevuwk",
+  "Category": "StreamElements",
+  "CategoryIcon": "SEImage",
+  "CodePath": "plugin.streamelements.store.exe",
+  "Description": "StreamElements Store Plugin",
+  "Name": "StreamElements Store",
+  "Icon": "pluginIcon",
+  "URL": "https://github.com/kevuwk/StreamDeck-StreamElements",
+  "Version": "0.6",
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "4.4.1"
+  }
+}
